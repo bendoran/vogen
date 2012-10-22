@@ -57,7 +57,7 @@ class AS3VoParser( VoParser ):
         
         #Print the Getters
         for variable in variables :
-            returnText += "\n\t\tpublic function set " + variable.variableName + "() : " + variable.variableType + "{"
+            returnText += "\n\t\tpublic function get " + variable.variableName + "() : " + variable.variableType + "{"
             returnText += "\n\t\t\treturn this._" + variable.variableName + ";"
             returnText += "\n\t\t}"
             returnText += "\n"
