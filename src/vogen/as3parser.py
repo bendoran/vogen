@@ -43,13 +43,13 @@ class AS3VoParser( VoParser ):
         returnText = returnText.rstrip('}\n')
         
         #Print the Constructor
-        returnText += "\n\t\tpublic " + className + "( "
+        returnText += "\n\t\tpublic function" + className + "( "
         for variable in variables :
             returnText += "\n\t\t\t" + variable.variableName + " : " + variable.variableType + " ,"
         returnText = returnText.rstrip(', ')
         returnText += "\n\t\t){"
         for variable in variables :
-            returnText += "\n\t\t\t this._" + variable.variableName + " = " + variable.variableName + ";"
+            returnText += "\n\t\t\tthis._" + variable.variableName + " = " + variable.variableName + ";"
         returnText += "\n\t\t}"
         
         #A bit of White Space
@@ -57,9 +57,9 @@ class AS3VoParser( VoParser ):
         
         #Print the Getters
         for variable in variables :
-            returnText += "\n\t\t public function set " + variable.variableName + "() : " + variable.variableType + "{"
-            returnText += "\n\t\t\t return this._" + variable.variableName + ";"
-            returnText += "\n\t\t }"
+            returnText += "\n\t\tpublic function set " + variable.variableName + "() : " + variable.variableType + "{"
+            returnText += "\n\t\t\treturn this._" + variable.variableName + ";"
+            returnText += "\n\t\t}"
             returnText += "\n"
             
         returnText += "\n\t}"
