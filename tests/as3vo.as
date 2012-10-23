@@ -4,8 +4,8 @@ package com.example.sompackage{
 		
 		private var variable1 : String;
 		private var variable2 : Number;
-		private var anotherVariable : int;
-		private var anotherVariable : Date;
+		private var anotherVariable1 : int;
+		private var anotherVariable2 : Date;
 		
 	}
 }
