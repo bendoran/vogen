@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from vogen.as3parser import AS3VoParser
 from vogen.javaparser import JavaVoParser
+from vogen.phpparser import PHPParser
 import argparse
 import os.path
 import re
@@ -35,6 +36,8 @@ def run():
     #Determine the Format
     fileName, fileExtension = os.path.splitext( inputFilename )
     
+    voParser = None
+    
     if fileExtension == ".as" :
         voParser = AS3VoParser();
         if verbose : 
@@ -43,6 +46,10 @@ def run():
         voParser = JavaVoParser();
         if verbose : 
             print "Parsing JAVA Source File"
+    elif fileExtension == ".php" :
+        voParser = PHPParser();
+        if verbose : 
+            print "Parsing PHP Source File"
     
     if voParser:
         
@@ -67,7 +74,7 @@ def run():
                 if verbose != True :
                     print outputText
     else:
-        print "Input file format not recognised, supported formats (.as, .java)"
+        print "Input file format not recognised, supported formats (.as, .java, .php)"
 
 
 
