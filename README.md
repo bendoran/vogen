@@ -12,6 +12,7 @@ So far vogen can generate Value Objects for the following languages
 
 * Actionscript 3
 * Java
+* PHP
 
 ## Usage
 
