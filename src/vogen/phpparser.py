@@ -2,8 +2,7 @@ from vogen.parser import VoParser, VoVariable
 import re
 
 class PHPParser( VoParser ):
-    
-     def parse( self, inputString, verbose ):
+    def parse( self, inputString, verbose ):
         self.inputString = inputString
         self.verbose = verbose
         
@@ -32,7 +31,7 @@ class PHPParser( VoParser ):
         
         return self.buildClass( variables, className)
     
-     def buildClass(self, variables, className ):
+    def buildClass(self, variables, className ):
         #Generate the new source code
         returnText = self.inputString
         
