@@ -19,12 +19,12 @@ class AS3VoParser( VoParser ):
         
         #Find the properties
         variables = list()
-        for variable in re.findall(r"private var ([\w\[\]]+) : (\w+)", self.inputString ):
+        for variable in re.findall(r"private var ([\w\[\]]+)( )?:( )?(\w+)", self.inputString ):
             voVariable = VoVariable( variable[0], variable[1] )
             variables.append( voVariable )
             if self.verbose :
                 print "Found Property: " + voVariable.__str__()
-            
+                    
         if len( variables ) <= 0 :
             print "Couldn't find any variables in Source File, can't build a vo"
             return False
@@ -43,7 +43,7 @@ class AS3VoParser( VoParser ):
         returnText = returnText.rstrip('}\n')
         
         #Print the Constructor
-        returnText += "\n\t\tpublic function" + className + "( "
+        returnText += "\n\t\tpublic function " + className + "( "
         for variable in variables :
             returnText += "\n\t\t\t" + variable.variableName + " : " + variable.variableType + " ,"
         returnText = returnText.rstrip(', ')
