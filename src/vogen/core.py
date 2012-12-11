@@ -1,78 +1,73 @@
 #!/usr/bin/env python
+import argparse
 from vogen.as3parser import AS3VoParser
+import sys
 from vogen.javaparser import JavaVoParser
 from vogen.phpparser import PHPParser
-import argparse
-import os.path
-import re
-import sys
+#from vogen.javaparser import JavaVoParser
+#from vogen.phpparser import PHPParser
                     
 def run():
-
     #Get the input args
     argParser = argparse.ArgumentParser(description='VO Gen')
-    argParser.add_argument('-i','--input', help='The source file to process',required=True)
+    argParser.add_argument('-i','--input', help='The source file to process',required=False)
     argParser.add_argument('-o','--output', help='The source file to save output to, if no output is provided output is printed to screen', required=False)
     argParser.add_argument('-s','--save', help='The output of the source file will be saved to the input file', action='store_true', required=False)
     argParser.add_argument('-v','--verbose', help='Enables verbose messaging', action='store_true', required=False)
     args = vars( argParser.parse_args() )
     
     #Input Filename is Required
-    inputFilename = args['input'];
+    input_filename = args['input'];
     
-    outputFilename = None
+    output_filename = None
     verbose = False
     
     #Get the OutPut Filename if it's set
     if args['output'] :
-        outputFilename = args['output']
-        
+        output_filename = args['output']
     if args['verbose'] :
         verbose = True;
-    
     if args['save'] :
-        outputFilename = inputFilename 
+        output_filename = input_filename 
     
-    #Determine the Format
-    fileName, fileExtension = os.path.splitext( inputFilename )
+    vo_parser = None
     
-    voParser = None
-    
-    if fileExtension == ".as" :
-        voParser = AS3VoParser();
+    #Assertain Which VO Parser We Want to Use
+    if ".as" in input_filename :
+        vo_parser = AS3VoParser();
         if verbose : 
             print "Parsing AS3 Source File"
-    elif fileExtension == ".java" :
-        voParser = JavaVoParser();
+    elif ".java" in input_filename :
+        vo_parser = JavaVoParser();
         if verbose : 
             print "Parsing JAVA Source File"
-    elif fileExtension == ".php" :
-        voParser = PHPParser();
+    elif ".php" in input_filename :
+        vo_parser = PHPParser();
         if verbose : 
             print "Parsing PHP Source File"
-    
-    if voParser:
+            
+    if vo_parser:
         
         #Open the File
-        inputFile = open( inputFilename )
-        inputText = inputFile.read()
-        inputFile.close()
+        input_file = open( input_filename )
+        input_text = input_file.read()
+        input_file.close()
         
         #Parse the input
-        outputText = voParser.parse( inputText, verbose )
+        output_text = vo_parser.parse( input_text, verbose )
         
-        if outputText :
+        if output_text :
             #Output the result
             if verbose : 
-                print "\n\n=======================\n=Resulting Source Code=\n=======================\n\n" + outputText
+                print "\n\n=======================\n=Resulting Source Code=\n=======================\n\n" + output_text
                         
-            if outputFilename != None : 
-                outputFile = open( outputFilename, 'w+')
-                outputFile.write( outputText )
-                outputFile.close()
+            if output_filename != None : 
+                output_file = open( output_filename, 'w+')
+                output_file.write( output_text )
+                output_file.close()
             else:
                 if verbose != True :
-                    print outputText
+                    print output_text
     else:
         print "Input file format not recognised, supported formats (.as, .java, .php)"
 

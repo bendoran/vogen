@@ -1,59 +1,59 @@
-from vogen.parser import VoParser, VoVariable
 import re
+from vogen.voparser import VoParser, VoVariable
 
 class PHPParser( VoParser ):
-    def parse( self, inputString, verbose ):
-        self.inputString = inputString
+    def parse( self, input_string, verbose ):
+        self.input_string = input_string
         self.verbose = verbose
         
-        classNames = re.findall(r"class (\w+)", self.inputString );
+        class_names = re.findall(r"class (\w+)", self.input_string );
         
         #Find the ClassName
-        if len(classNames) > 0 :         
+        if len(class_names) > 0 :         
             if verbose :       
-                print "Found Class"+classNames[0]
-            className = classNames[0]
+                print "Found Class"+class_names[0]
+            className = class_names[0]
         else:
             print "Couldn't find ClassName in Source File"
             return False
         
         #Find the properties
         variables = list()
-        for variable in re.findall(r"private \$(\w+)", self.inputString ):
-            voVariable = VoVariable( variable, "" )
-            variables.append( voVariable )
+        for variable in re.findall(r"private \$(\w+)", self.input_string ):
+            vo_variable = VoVariable( variable, "" )
+            variables.append( vo_variable )
             if self.verbose :
-                print "Found Property: " + voVariable.__str__()
+                print "Found Property: " + vo_variable.__str__()
             
         if len( variables ) <= 0 :
             print "Couldn't find any variables in Source File, can't build a vo"
             return False
         
-        return self.buildClass( variables, className)
+        return self.build_class( variables, className)
     
-    def buildClass(self, variables, className ):
+    def build_class(self, variables, className ):
         #Generate the new source code
-        returnText = self.inputString
+        return_text = self.input_string
         
         #Strip the last bracket
-        returnText = returnText.rstrip('}')
-        returnText = returnText.rstrip('}\n')
+        return_text = return_text.rstrip('}')
+        return_text = return_text.rstrip('}\n')
         
         #build the constructor
-        returnText = returnText + "\n\tpublic " + className + "( "
+        return_text = return_text + "\n\tpublic " + className + "( "
         for variable in variables :  
-            returnText = returnText + "$" + variable.variableName + ","
-        returnText = returnText.rstrip(', ')
-        returnText = returnText +" ){\n"
+            return_text = return_text + "$" + variable.variable_name + ","
+        return_text = return_text.rstrip(', ')
+        return_text = return_text +" ){\n"
         for variable in variables :  
-            returnText = returnText + "\t\tthis->" + variable.variableName + " = $" + variable.variableName + ";\n"
-        returnText = returnText + "\t}\n"
+            return_text = return_text + "\t\tthis->" + variable.variable_name + " = $" + variable.variable_name + ";\n"
+        return_text = return_text + "\t}\n"
         
         #Build the Getters
         for variable in variables :  
-            returnText = returnText + "\n\tpublic get" + variable.variableName[0].upper() + variable.variableName[1:] + "(){\n\t\treturn $this->" +  variable.variableName + ";\n\t}\n"
+            return_text = return_text + "\n\tpublic get" + variable.variable_name[0].upper() + variable.variable_name[1:] + "(){\n\t\treturn $this->" +  variable.variable_name + ";\n\t}\n"
         
         #Put the last brace back on
-        returnText = returnText + "}"
+        return_text = return_text + "}"
         
-        return returnText
+        return return_text

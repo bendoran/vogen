@@ -1,68 +1,68 @@
-from vogen.parser import VoParser, VoVariable
 import re
+from vogen.voparser import VoParser, VoVariable
 
 class AS3VoParser( VoParser ):
-    def parse( self, inputString, verbose ):
-        self.inputString = inputString
+    def parse( self, input_string, verbose ):
+        self.input_string = input_string
         self.verbose = verbose
         
-        classNames = re.findall(r"class (\w+)", self.inputString );
+        class_names = re.findall(r"class (\w+)", self.input_string );
         
-        #Find the ClassName
-        if len(classNames) > 0 :         
+        #Find the class_name
+        if len(class_names) > 0 :         
             if verbose :       
-                print "Found Class"+classNames[0]
-            className = classNames[0]
+                print "Found Class"+class_names[0]
+            class_name = class_names[0]
         else:
-            print "Couldn't find ClassName in Source File"
+            print "Couldn't find class_name in Source File"
             return False
         
         #Find the properties
         variables = list()
-        for variable in re.findall(r"private var ([\w\[\]]+)( )?:( )?(\w+)", self.inputString ):
-            voVariable = VoVariable( variable[0], variable[1] )
-            variables.append( voVariable )
+        for variable in re.findall(r"private var ([\w\[\]]+) ?: ?(\w+)", self.input_string ):
+            vo_variable = VoVariable( variable[0], variable[1] )
+            variables.append( vo_variable )
             if self.verbose :
-                print "Found Property: " + voVariable.__str__()
+                print "Found Property: " + vo_variable.__str__()
                     
         if len( variables ) <= 0 :
             print "Couldn't find any variables in Source File, can't build a vo"
             return False
          
-        return self.buildClass( variables, className)
+        return self.build_class( variables, class_name)
     
-    def buildClass(self, variables, className ):
-        returnText = self.inputString
+    def build_class(self, variables, class_name ):
+        return_text = self.input_string
         
         #Rename all existing variables
         for variable in variables :
-            returnText = returnText.replace( variable.variableName, "_"+variable.variableName )
+            return_text = return_text.replace( variable.variable_name, "_"+variable.variable_name )
         
         #Strip the last bracket
-        returnText = returnText.rstrip('}')
-        returnText = returnText.rstrip('}\n')
+        return_text = return_text.rstrip('}')
+        return_text = return_text.rstrip('}\n')
         
         #Print the Constructor
-        returnText += "\n\t\tpublic function " + className + "( "
+        return_text += "\n\t\tpublic function " + class_name + "( "
         for variable in variables :
-            returnText += "\n\t\t\t" + variable.variableName + " : " + variable.variableType + " ,"
-        returnText = returnText.rstrip(', ')
-        returnText += "\n\t\t){"
+            return_text += "\n\t\t\t" + variable.variable_name + " : " + variable.variable_type + " ,"
+        return_text = return_text.rstrip(', ')
+        return_text += "\n\t\t){"
         for variable in variables :
-            returnText += "\n\t\t\tthis._" + variable.variableName + " = " + variable.variableName + ";"
-        returnText += "\n\t\t}"
+            return_text += "\n\t\t\tthis._" + variable.variable_name + " = " + variable.variable_name + ";"
+        return_text += "\n\t\t}"
         
         #A bit of White Space
-        returnText += "\n"
+        return_text += "\n"
         
         #Print the Getters
         for variable in variables :
-            returnText += "\n\t\tpublic function get " + variable.variableName + "() : " + variable.variableType + "{"
-            returnText += "\n\t\t\treturn this._" + variable.variableName + ";"
-            returnText += "\n\t\t}"
-            returnText += "\n"
+            return_text += "\n\t\tpublic function get " + variable.variable_name + "() : " + variable.variable_type + "{"
+            return_text += "\n\t\t\treturn this._" + variable.variable_name + ";"
+            return_text += "\n\t\t}"
+            return_text += "\n"
             
-        returnText += "\n\t}"
-        returnText += "\n}"
+        return_text += "\n\t}"
+        return_text += "\n}"
         
-        return returnText
+        return return_text
